@@ -49,13 +49,13 @@ let weightsToNeuron (layer : Layer) (n : int) : WeightsToNeuron =
     layer.Column(n) |> Vector.toList
 
 let weightsToNextLayer (layer : Layer) : WeightsToNeuron list =
-    
+    List.map (fun c -> layer.Column(c) |> Vector.toList) [0..layer.ColumnCount]
 
 let weightsFromInput (layer : Layer) (n : int) : WeightsFromInput =
     layer.Row(n) |> Vector.toList
 
 let weightsFromPreviousLayer (layer : Layer) : WeightsFromInput list =
-    
+    List.map (fun r -> layer.Row(r) |> Vector.toList) [0..layer.RowCount]
 
 (*
  *  NETWORK CREATION
@@ -114,7 +114,7 @@ let activate (inputs : double list) (weightsToNeuron : WeightsToNeuron) : double
     |> sigmoid
 
 let activateLayer (inputs : double list) (layer : Layer) : double list =
-    
+    List.map2 activate inputs (weightsToNextLayer layer)
 
 [<EntryPoint>]
 let main argv =
