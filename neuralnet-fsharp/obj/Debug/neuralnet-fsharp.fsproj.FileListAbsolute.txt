@@ -1,0 +1,10 @@
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\neuralnet_fsharp.exe.config
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\neuralnet_fsharp.exe
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\FSharp.Core.dll
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathNet.Numerics.dll
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathNet.Numerics.FSharp.dll
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\FSharp.Core.xml
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathNet.Numerics.xml
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathNet.Numerics.FSharp.xml
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet-fsharp.fsprojResolveAssemblyReference.cache
+e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet-fsharp.fsproj.neuralnet_fsharp.exe.config
