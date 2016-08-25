@@ -26,7 +26,7 @@ type NeuralNet = {
     Weights         : Layer list;
 }
 
-// Constants
+// Constants and Objects
 
 let e = Math.E
 let bias = 1.0
@@ -44,6 +44,12 @@ let normalize (inputLow   : double)
               (outputLow  : double)
               (outputHigh : double) : Double =
     (((number - inputLow) * (outputHigh - outputLow)) / (inputHigh - inputLow)) + outputLow
+
+let dotProductList (list1 : double list) (list2 : double list) : double =
+    List.map2 (*) list1 list2 |> List.sum
+
+let dotProductVec (vec1 : Vector<double>) (vec2 : Vector<double>) : double =
+    Vector.map2 (*) vec1 vec2 |> Vector.sum
 
 let weightsToNeuron (layer : Layer) (n : int) : WeightsToNeuron =
     layer.Column(n) |> Vector.toList
@@ -64,7 +70,7 @@ let weightsFromPreviousLayer (layer : Layer) : WeightsFromInput list =
 let makeLayer numInputs numTargets : Layer =
     CreateMatrix.Dense<double>(numInputs, numTargets, 1.0)
 
-let repeat thing times =
+let repeat (thing : 'T) times : 'T list =
     let rec repeatRec listSoFar times =
         match times with
         | n when n < 0 -> []
@@ -81,7 +87,7 @@ let neuralNet (inputLow        : double)
               (outputLow       : double)
               (outputHigh      : double) : NeuralNet =
     let inputLayer = makeLayer numInputs nodesPerLayer
-    let hiddenWeights = repeat (makeLayer nodesPerLayer nodesPerLayer) (numHiddenLayers - 1)
+    let hiddenLayers = repeat (makeLayer nodesPerLayer nodesPerLayer) (numHiddenLayers - 1)
     let outputLayer = makeLayer nodesPerLayer numOutputs
     {
         NeuralNet.InputLow = inputLow;
@@ -92,7 +98,7 @@ let neuralNet (inputLow        : double)
         NumOutputs = numOutputs;
         OutputLow = outputLow;
         OutputHigh = outputHigh;
-        Weights = (inputLayer :: hiddenWeights) @ [ outputLayer ]
+        Weights = (inputLayer :: hiddenLayers) @ [ outputLayer ]
     }
 
 let randWeight (r : int) (c : int) (d : double) (t : 'a) =
@@ -109,12 +115,45 @@ let randomizeNet (network : NeuralNet) : NeuralNet =
  *)
 
 let activate (inputs : double list) (weightsToNeuron : WeightsToNeuron) : double =
-    List.map2 (fun f s -> f * s) inputs weightsToNeuron
-    |> List.sum
+    dotProductList inputs weightsToNeuron
     |> sigmoid
 
 let activateLayer (inputs : double list) (layer : Layer) : double list =
-    List.map2 activate inputs (weightsToNextLayer layer)
+    weightsToNextLayer layer
+    |> List.map (fun n -> activate inputs n)
+
+let evaluate (inputs : double list) (network : NeuralNet) : double list =
+    let rec feedForward (prevVals : double list) (remainingLayers : Layer list) : double list =
+        match remainingLayers with
+        | [] -> prevVals
+                |> List.map (fun v -> normalize -1.0
+                                                1.0 
+                                                v 
+                                                network.OutputLow 
+                                                network.OutputHigh)
+        | first :: rest -> feedForward (activateLayer prevVals first)
+                                       rest
+    feedForward (List.map (fun i -> normalize network.InputLow
+                                              network.InputHigh
+                                              i
+                                              -1.0
+                                              1.0) inputs)
+                network.Weights
+
+(*
+ *  TRAINING FUNCTIONS
+ *)
+
+let meanSquaredError (actual : double) (expected : double) : double =
+    learningRate * ((actual - expected) ** 2.0)
+
+let neuronError (prevErrors : double list) (neuronWeights : WeightsFromInput) : double =
+    dotProductList prevErrors neuronWeights
+
+let layerErrors (prevErrors : double list) (layer : Layer) : double list =
+    List.map (fun n -> neuronError prevErrors n) (weightsFromPreviousLayer layer)
+
+let adjustColumnWeights
 
 [<EntryPoint>]
 let main argv =
