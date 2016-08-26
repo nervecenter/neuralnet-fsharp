@@ -66,17 +66,23 @@ let weightsToNeuron (layer : Layer) (n : int) : WeightsToNeuron =
     layer.Column(n) |> Vector.toList
 
 let weightsToNextLayer (layer : Layer) : WeightsToNeuron list =
-    List.map (fun c -> layer.Column(c) |> Vector.toList) [0..layer.ColumnCount]
+    layer.EnumerateColumns() 
+    |> Seq.toList
+    |> List.map Vector.toList
+    //List.map (fun c -> layer.Column(c) |> Vector.toList) [0..layer.ColumnCount]
 
 let rowsFromColumns (columns : WeightsToNeuron list) : WeightsFromInput list =
     let numRows = columns.Head.Length
-    List.map (fun rowNum -> List.map (fun (col : WeightsToNeuron) -> col.Item(rowNum)) columns) [0..numRows]
+    List.map (fun rowNum -> List.map (fun (col : WeightsToNeuron) -> col.Item(rowNum)) columns) [0..numRows - 1]
 
 let weightsFromInput (layer : Layer) (n : int) : WeightsFromInput =
     layer.Row(n) |> Vector.toList
 
 let weightsFromPreviousLayer (layer : Layer) : WeightsFromInput list =
-    List.map (fun r -> layer.Row(r) |> Vector.toList) [0..layer.RowCount]
+    layer.EnumerateRows()
+    |> Seq.toList
+    |> List.map Vector.toList
+    //List.map (fun r -> layer.Row(r) |> Vector.toList) [0..layer.RowCount]
 
 (*
  *  NETWORK CREATION
@@ -199,9 +205,10 @@ let averageEpochError (set : TrainingSet) (network : NeuralNet) : double =
                                                |> averageDoubles)
     |> averageDoubles
 
-let fullyTrainNetwork (set: TrainingSet) (network : NeuralNet) (errorFloor : double) =
+let fullyTrainNetwork (set: TrainingSet) (errorFloor : double) (network : NeuralNet) : NeuralNet =
     let rec epoch (net : NeuralNet) (epochs : int) : NeuralNet =
         if epochs < 1000 then
+            printfn "%f" (averageEpochError set net)
             epoch (trainSet set net) (epochs + 1)
         else
             net
@@ -209,5 +216,12 @@ let fullyTrainNetwork (set: TrainingSet) (network : NeuralNet) (errorFloor : dou
     
 [<EntryPoint>]
 let main argv =
-    printfn "%A" argv
+    let andData : TrainingSet = [{ In = [0.0; 0.0]; Out = [0.0]; };
+                                 { In = [1.0; 0.0]; Out = [0.0]; };
+                                 { In = [0.0; 1.0]; Out = [0.0]; };
+                                 { In = [1.0; 1.0]; Out = [1.0]; };]
+    let andGate : NeuralNet =
+        neuralNet 0.0 1.0 2 2 2 1 0.0 1.0
+        |> randomizeNet
+        |> fullyTrainNetwork andData 0.05
     0

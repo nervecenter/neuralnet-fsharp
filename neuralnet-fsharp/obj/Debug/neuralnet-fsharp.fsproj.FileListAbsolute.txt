@@ -8,3 +8,7 @@ e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathN
 e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\MathNet.Numerics.FSharp.xml
 e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet-fsharp.fsprojResolveAssemblyReference.cache
 e:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet-fsharp.fsproj.neuralnet_fsharp.exe.config
+E:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\neuralnet_fsharp.XML
+E:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\bin\Debug\neuralnet_fsharp.pdb
+E:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet_fsharp.exe
+E:\Chris\Documents\Projects\F#\neuralnet-fsharp\neuralnet-fsharp\obj\Debug\neuralnet_fsharp.pdb
