@@ -26,6 +26,13 @@ type NeuralNet = {
     Weights         : Layer list;
 }
 
+type TrainingInstance = {
+    In  : double list;
+    Out : double list;
+}
+
+type TrainingSet = TrainingInstance list
+
 // Constants and Objects
 
 let e = Math.E
@@ -45,6 +52,10 @@ let normalize (inputLow   : double)
               (outputHigh : double) : Double =
     (((number - inputLow) * (outputHigh - outputLow)) / (inputHigh - inputLow)) + outputLow
 
+let reverseList list = List.fold (fun acc elem -> elem :: acc) [] list
+
+let averageDoubles (listOfDouble : double list) = List.sum listOfDouble / (double listOfDouble.Length)
+
 let dotProductList (list1 : double list) (list2 : double list) : double =
     List.map2 (*) list1 list2 |> List.sum
 
@@ -56,6 +67,10 @@ let weightsToNeuron (layer : Layer) (n : int) : WeightsToNeuron =
 
 let weightsToNextLayer (layer : Layer) : WeightsToNeuron list =
     List.map (fun c -> layer.Column(c) |> Vector.toList) [0..layer.ColumnCount]
+
+let rowsFromColumns (columns : WeightsToNeuron list) : WeightsFromInput list =
+    let numRows = columns.Head.Length
+    List.map (fun rowNum -> List.map (fun (col : WeightsToNeuron) -> col.Item(rowNum)) columns) [0..numRows]
 
 let weightsFromInput (layer : Layer) (n : int) : WeightsFromInput =
     layer.Row(n) |> Vector.toList
@@ -153,8 +168,45 @@ let neuronError (prevErrors : double list) (neuronWeights : WeightsFromInput) : 
 let layerErrors (prevErrors : double list) (layer : Layer) : double list =
     List.map (fun n -> neuronError prevErrors n) (weightsFromPreviousLayer layer)
 
-let adjustColumnWeights
+let adjustWeightsToNeuron (neuronError : double) (weightsToNeuron : WeightsToNeuron) : WeightsToNeuron =
+    List.map (fun w -> w - neuronError) weightsToNeuron
 
+let adjustLayerWeights (layerErrors : double list) (layer : Layer) : Layer =
+    List.map2 adjustWeightsToNeuron layerErrors (weightsToNextLayer layer)
+    |> rowsFromColumns
+    |> matrix
+
+let adjustNetWeights (errors : double list list) (network : NeuralNet) : NeuralNet =
+    let newWeights = List.map2 adjustLayerWeights errors network.Weights
+    { network with Weights = newWeights }
+
+let trainInstance (instance : TrainingInstance) (network : NeuralNet) : NeuralNet =
+    let rec backPropagate (errors : double list list) (layersLeft : Layer list) : NeuralNet =
+        match layersLeft with
+        | [] -> adjustNetWeights errors network
+        | first :: rest -> backPropagate ((layerErrors errors.Head first) :: errors) rest
+    backPropagate [(List.map2 meanSquaredError (evaluate instance.In network) instance.Out)]
+                  (reverseList network.Weights)
+
+let rec trainSet (set : TrainingSet) (network : NeuralNet) : NeuralNet =
+    match set with
+    | [] -> network
+    | first :: rest -> trainSet (rest) (trainInstance first network)
+
+let averageEpochError (set : TrainingSet) (network : NeuralNet) : double =
+    set
+    |> List.map (fun (i : TrainingInstance) -> List.map2 meanSquaredError (evaluate i.In network) i.Out
+                                               |> averageDoubles)
+    |> averageDoubles
+
+let fullyTrainNetwork (set: TrainingSet) (network : NeuralNet) (errorFloor : double) =
+    let rec epoch (net : NeuralNet) (epochs : int) : NeuralNet =
+        if epochs < 1000 then
+            epoch (trainSet set net) (epochs + 1)
+        else
+            net
+    epoch network 1
+    
 [<EntryPoint>]
 let main argv =
     printfn "%A" argv
