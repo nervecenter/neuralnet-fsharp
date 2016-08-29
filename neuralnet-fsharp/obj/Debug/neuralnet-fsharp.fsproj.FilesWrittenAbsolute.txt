@@ -1,0 +1,9 @@
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/obj/Debug/.NETFramework,Version=v4.5.2.AssemblyAttribute.fs
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/neuralnet_fsharp.exe.config
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/neuralnet_fsharp.pdb
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/neuralnet_fsharp.exe
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/obj/Debug/neuralnet_fsharp.exe
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/obj/Debug/neuralnet_fsharp.pdb
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/FSharp.Core.dll
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/MathNet.Numerics.dll
+/Users/Chris/Documents/Projects/F#/neuralnet-fsharp/neuralnet-fsharp/bin/Debug/MathNet.Numerics.FSharp.dll
